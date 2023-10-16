@@ -1,13 +1,14 @@
 FROM nginx:latest
+
 EXPOSE 80
+
 WORKDIR /app
-USER root
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY config.json ./
-COPY entrypoint.sh ./
+COPY entrypoint.sh /app/
 
-RUN apt-get update && apt-get install -y wget unzip qrencode iproute2 systemctl && \
+RUN apt-get update && apt-get install -y wget unzip qrencode iproute2 systemd && \
     wget -O cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb && \
     dpkg -i cloudflared.deb && \
     rm -f cloudflared.deb && \
@@ -16,4 +17,4 @@ RUN apt-get update && apt-get install -y wget unzip qrencode iproute2 systemctl 
     rm -f temp.zip && \
     chmod -v 755 xray entrypoint.sh
 
-ENTRYPOINT [ "./entrypoint.sh" ]
+ENTRYPOINT ["./entrypoint.sh"]
